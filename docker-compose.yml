@@ -6,7 +6,7 @@ networks:
 
 services:
     app:
-        build: 
+        build:
             context: ./
             dockerfile: Dockerfile
         image: my_custom_l8_image
@@ -14,37 +14,39 @@ services:
         restart: unless-stopped
         tty: true
         working_dir: /var/www
-        volumes: 
+        volumes:
             - ./:/var/www
-        networks: 
+        networks:
             - lcms-network
-    
+
     mysql:
         image: mysql:5.7.33
         container_name: lcms_db
         restart: unless-stopped
         tty: true
-        environment: 
+        environment:
             MYSQL_DATABASE: lcms
             MYSQL_ROOT_PASSWORD: 123456
             MYSQL_PASSWORD: 123456
             MYSQL_USER: laravel8
             SERVICE_TAGS: dev
             SERVICE_NAME: mysql
-        volumes: 
+        volumes:
             - ./mysql/data:/var/lib/mysql
+        ports:
+            - 33060:3306
         networks:
             - lcms-network
-    
+
     nginx:
       image: nginx:alpine
       container_name: lcms_server
       restart: unless-stopped
       tty: true
-      ports: 
+      ports:
           - 8000:80
-      volumes: 
+      volumes:
           - ./:/var/www
           - ./nginx/conf:/etc/nginx/conf.d
-      networks: 
+      networks:
           - lcms-network
